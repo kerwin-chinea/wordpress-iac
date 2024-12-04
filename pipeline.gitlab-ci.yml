@@ -1,0 +1,31 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  DOCKER_IMAGE: "my-wordpress-app:latest"
+  AWS_REGION: "us-west-2"
+  TF_STATE_BUCKET: "my-terraform-state-bucket"
+
+# Build Docker image
+build:
+  stage: build
+  script:
+    - docker build -t $DOCKER_IMAGE .
+
+# Run unit tests
+unit_tests:
+  stage: test
+  script:
+    - docker run $DOCKER_IMAGE phpunit --testsuite=unit
+
+# Terraform Validation and Apply
+deploy:
+  stage: deploy
+  script:
+    - terraform init -backend-config="bucket=$TF_STATE_BUCKET" -backend-config="region=$AWS_REGION"
+    - terraform validate
+    - terraform plan -out=tfplan
+    - terraform apply -auto-approve tfplan
+    - echo "Deployment completed!"
