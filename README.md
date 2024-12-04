@@ -30,7 +30,6 @@ This deployment focuses on automating and optimizing the setup of a WordPress en
 
 ## Architecture
 
-![AWS EKS WordPress Architecture](link-to-architecture-diagram.png)
 
 1. **Terraform** provisions the infrastructure:
    - Creates the EKS cluster.
